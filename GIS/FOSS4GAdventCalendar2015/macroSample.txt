@@ -1,0 +1,93 @@
+Sub Cesium_create_Line()
+    
+    If Cells(3, 6) = "" Then
+    Message1 = MsgBox("set line width!!!", vbOKOnly)
+    Else
+    
+    If Cells(3, 7) = "" Then
+    Message2 = MsgBox("set line color!!!", vbOKOnly)
+    Else
+        
+        
+    
+    Dim cesiumPath
+    Dim tso
+    
+    i = Application.WorksheetFunction.Count(Range("B:B"))
+ 
+    cesiumPath = ThisWorkbook.Path + "\cesium_line.js"
+    cesiumhtml = ThisWorkbook.Path + "\index.html"
+    
+    Set tso = CreateObject("Scripting.FileSystemObject")
+    tso.CreateTextFile (cesiumPath)
+    tso.CreateTextFile (cesiumhtml)
+    
+    
+    htmlCode1 = "<html lang=""en"">" & vbNewLine & _
+                "<head>" & vbNewLine & _
+                "   <title>Cesium Line</title>" & vbNewLine & _
+                "   <script src=""https://cesiumjs.org/Cesium/Build/Cesium/Cesium.js""></script>" & vbNewLine & _
+                "   <style>" & vbNewLine & _
+                "       @import url(""https://cesiumjs.org/Cesium/Build/Cesium/Widgets/widgets.css"");" & vbNewLine & _
+                "       html, body, #cesiumContainer {" & vbNewLine & _
+                "           width: 100%; height: 100%; margin: 0; padding: 0; overflow: hidden;" & vbNewLine & _
+                "       }" & vbNewLine & _
+                "   </style>" & vbNewLine & _
+                "</head>" & vbNewLine & _
+                "<body>" & vbNewLine & _
+                "   <div id=""cesiumContainer""></div>" & vbNewLine & _
+                "   <script src=""./cesium_line.js""></script>" & vbNewLine & _
+                "</body>" & vbNewLine & _
+                "</html>"
+
+    
+    Open cesiumhtml For Append As #2
+        Print #2, htmlCode1
+        
+    Close #2
+    
+    
+    cesiumCode1 = "var viewer = new Cesium.Viewer('cesiumContainer');" & vbNewLine & _
+                "var line1 = viewer.entities;" & vbNewLine & _
+                "line1.add({" & vbNewLine & _
+                "     polyline : {" & vbNewLine & _
+                "         positions : Cesium.Cartesian3.fromDegreesArrayHeights(["
+
+
+    cesiumCode2 = "])," & vbNewLine & _
+                    "         width : " & Cells(3, 6) & ","
+                    
+    
+    
+    Message = MsgBox("set arrow simbol at end node ?", vbYesNo + vbQuestion)
+        If Message = vbYes Then
+    cesiumCode3 = "         material : new Cesium.PolylineArrowMaterialProperty(Cesium.Color." + Cells(3, 7) + ")"
+        Else
+    cesiumCode3 = "         material : Cesium.Color." + Cells(3, 7)
+        End If
+        
+    cesiumCode4 = "     }});" & vbNewLine & _
+                "viewer.zoomTo(viewer.entities);"
+    
+    Open cesiumPath For Append As #1
+        Print #1, cesiumCode1
+        
+        For x = 2 To i
+            Print #1, Cells(x, 2); ","; Cells(x, 3); ","; Cells(x, 4); ","
+        Next x
+        
+        i = i + 1
+        Print #1, Cells(i, 2); ","; Cells(i, 3); ","; Cells(i, 4)
+        
+
+        Print #1, cesiumCode2
+        Print #1, cesiumCode3
+        Print #1, cesiumCode4
+        
+        
+        
+    Close #1
+    End If
+    End If
+    
+End Sub
