@@ -59,7 +59,7 @@ Sub Cesium_create_Line()
                     
     
     
-    Message = MsgBox("set arrow simbol at end node ?", vbYesNo + vbQuestion)
+    Message = MsgBox("set arrow symbol at end node ?", vbYesNo + vbQuestion)
         If Message = vbYes Then
     cesiumCode3 = "         material : new Cesium.PolylineArrowMaterialProperty(Cesium.Color." + Cells(3, 7) + ")"
         Else
